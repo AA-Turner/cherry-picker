@@ -154,16 +154,18 @@ def test_get_base_branch(subprocess_check_output):
     #     backport-{SHA}-{base_branch}
     subprocess_check_output.return_value = b"22a594a0047d7706537ff2ac676cdc0f1dcb329c"
     cherry_pick_branch = "backport-22a594a-2.7"
-    result = get_base_branch(cherry_pick_branch)
+    result, sha = get_base_branch(cherry_pick_branch)
     assert result == "2.7"
+    assert sha == "22a594a"
 
 
 @mock.patch("subprocess.check_output")
 def test_get_base_branch_which_has_dashes(subprocess_check_output):
     subprocess_check_output.return_value = b"22a594a0047d7706537ff2ac676cdc0f1dcb329c"
     cherry_pick_branch = "backport-22a594a-baseprefix-2.7-basesuffix"
-    result = get_base_branch(cherry_pick_branch)
+    result, sha = get_base_branch(cherry_pick_branch)
     assert result == "baseprefix-2.7-basesuffix"
+    assert sha == "22a594a"
 
 
 @pytest.mark.parametrize(

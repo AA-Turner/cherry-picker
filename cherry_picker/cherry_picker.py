@@ -333,7 +333,7 @@ To abort the cherry-pick and cleanup:
         updated_commit_message = self.get_commit_message(self.commit_sha1)
         if self.prefix_commit:
             updated_commit_message = remove_commit_prefix(updated_commit_message)
-            base_branch = get_base_branch(cherry_pick_branch)
+            base_branch, _sha = get_base_branch(cherry_pick_branch)
             updated_commit_message = f"[{base_branch}] {updated_commit_message}"
 
         # Add '(cherry picked from commit ...)' to the message
@@ -600,10 +600,7 @@ $ cherry_picker --abort
         if cherry_pick_branch.startswith("backport-"):
             set_state(WORKFLOW_STATES.CONTINUATION_STARTED)
             # amend the commit message, prefix with [X.Y]
-            base = get_base_branch(cherry_pick_branch)
-            short_sha = cherry_pick_branch[
-                cherry_pick_branch.index("-") + 1 : cherry_pick_branch.index(base) - 1
-            ]
+            base, short_sha = get_base_branch(cherry_pick_branch)
             self.commit_sha1 = get_full_sha_from_short(short_sha)
 
             commits = get_commits_from_backport_branch(base)
@@ -857,7 +854,7 @@ def get_base_branch(cherry_pick_branch):
     # This throws a ValueError if the base_branch doesn't meet our requirements
     version_from_branch(base_branch)
 
-    return base_branch
+    return base_branch, sha
 
 
 def validate_sha(sha):
