@@ -603,7 +603,7 @@ $ cherry_picker --abort
             base, short_sha = get_base_branch(cherry_pick_branch)
             self.commit_sha1 = get_full_sha_from_short(short_sha)
 
-            commits = get_commits_from_backport_branch(base)
+            commits = get_commits_from_backport_branch(f'{self.upstream}/{base}')
             if len(commits) == 1:
                 commit_message = self.amend_commit_message(cherry_pick_branch)
             else:
